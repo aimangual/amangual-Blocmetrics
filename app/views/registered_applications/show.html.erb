@@ -9,7 +9,7 @@
       <div class="col-md-6"> -->
       <br />
         <div class="jumbotron" id="jumbo">
-          <%= pie_chart @registered_application.events.group(:event_name).count %>
+          <%= pie_chart @registered_application.events.group(:event).count %>
         </div>
   </div>
 </div>

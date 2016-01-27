@@ -1,8 +1,8 @@
 class RegisteredApplicationsController < ApplicationController
-  befire_action :authenticate_user!
+  before_action :authenticate_user!, except: [:index, :show]
 
   def index
-    @registered_applications = current_user.registered_applications.all
+    @registered_applications = RegisteredApplication.all
   end
 
   def new
@@ -52,11 +52,14 @@ class RegisteredApplicationsController < ApplicationController
 
   def show
     @registered_application = RegisteredApplication.find(params[:id])
+    authorize @registered_application
+
+    @events = @registered_application.events.group_by(&:name)
   end
 
   private
 
-    def app_params
-      params.require(:registered_application).permit(:name, :url)
-    end
+  def registered_application_params
+    params.require(:registered_application).permit(:name, :url, :user)
+  end
 end

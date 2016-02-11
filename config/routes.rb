@@ -1,16 +1,11 @@
 Rails.application.routes.draw do
 
-  resources :events, only: [:index, :show]
-
-  resources :registered_applications
-
   devise_for :users
-  resources :users, only: [:show]
+  resources :registered_applications
+  get 'welcome/index'
 
-  get "welcome/index"
+  get 'about' => 'welcome#about'
 
-  get "welcome/about"
-  
   root to: 'welcome#index'
 
   namespace :api, defaults: { format: :json } do

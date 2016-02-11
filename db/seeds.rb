@@ -1,53 +1,37 @@
-# Create Users
-3.times do
+require 'faker'
+
+# create users
+5.times do
   user = User.new(
     name: Faker::Name.name,
     email: Faker::Internet.email,
-    password: Faker::Lorem.characters(8)
-    )
+    password: 'password'
+  )
   user.skip_confirmation!
   user.save!
 end
-
 users = User.all
 
-# Create a member
-member = User.new(
-  name: 'Member User',
-  email: 'member@example.com',
-  password: 'helloworld'
-  )
-member.skip_confirmation!
-member.save!
+# create registered applications
+counter = 0
+10.times do
+  counter += 1
+  app = RegisteredApplication.create!(
+    name: Faker::Lorem.sentence,
+    url: "http://nowhere#{counter}.com",
+    user: users.sample
+    )
+end
+registered_apps = RegisteredApplication.all
 
-# Create Registered Application
-RegisteredApplication.create!(
-  user: users.sample,
-  name: 'Valid Application',
-  url: 'http://registered_application.com'
-  ) 
-
-5.times do
-  RegisteredApplication.create!(
-    user: users.sample,
-    name: Faker::Lorem.word,
-    url: Faker::Internet.url
-    ) 
-
+20.times do
+  event = Event.create!(
+    name: Faker::Name.name,
+    registered_application: registered_apps.sample
+    )
 end
 
-registered_applications = RegisteredApplication.all
-
-registered_applications.each do | registered_application |
-  # Create Events
-  (1..10).to_a.each do |e|
-    Event.create!(
-      registered_application: registered_application,
-      name: "Level #{e}"
-      )
-  end
-end
-
+puts 'Seeding finished'
 puts "#{User.count} users created"
-puts "#{RegisteredApplication.count} applications created"
+puts "#{RegisteredApplication.count} registered applications created"
 puts "#{Event.count} events created"
